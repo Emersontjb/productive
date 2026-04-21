@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<!-- 
+    =====================================================================
+    PRODUTIVE - APLICATIVO DE PRODUTIVIDADE
+    =====================================================================
+    
+    Este é o arquivo principal HTML do aplicativo Produtive.
+    Ele define a estrutura da interface do usuário.
+    
+    O que este arquivo faz:
+    - Define o cabeçalho com navegação entre abas
+    - Criação das seções: Tarefas, Notas e Agenda
+    - Inclui o modal para formulários de entrada de dados
+    - Carrega os estilos CSS e o JavaScript
+    
+    Como funciona:
+    - O usuário pode navegar entre Tarefas, Notas e Agenda
+    - Cada seção tem seus próprios elementos de interface
+    - O modal é usado para adicionar/editar itens
+    
+    Para entender melhor: Leia o arquivo app.js que contém
+    toda a lógica de funcionamento.
+    =====================================================================
+-->
+<head>
+    <!-- Metadados básicos para SEO e funcionamento mobile -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Cor tema para a barra de endereço mobile -->
+    <meta name="theme-color" content="#6366f1">
+    
+    <!-- Descrição do app para mecanismos de busca -->
+    <meta name="description" content="App de produtividade completo com tarefas, notas e agenda">
+    
+    <!--链接清单文件 - Define o app como instalável (PWA) -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Folhas de estilo -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Ícone do app (使用SVG内联，避免外部依赖) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    
+    <!-- Título exibido na aba do navegador -->
+    <title>Produtive - Organize Sua Vida</title>
+</head>
+<body>
+    <!-- 
+        =================================================================
+        ESTRUTURA PRINCIPAL DO APLICATIVO
+        =================================================================
+        Todo o conteúdo do app está dentro da div .app
+    -->
+    <div class="app">
+        
+        <!-- 
+            CABEÇALHO
+            Contiene o título do app e a navegação principal
+        -->
+        <header>
+            <!-- Título principal com ícone -->
+            <h1>⚡ Produtive</h1>
+            
+            <!-- 
+                NAVEGAÇÃO POR ABAS
+                Permite alternar entre: Tarefas, Notas e Agenda
+                - data-tab: identifica qual aba mostrar
+                - class="active": indica a aba selecionada
+            -->
+            <nav>
+                <button class="nav-btn active" data-tab="tarefas">Tarefas</button>
+                <button class="nav-btn" data-tab="notas">Notas</button>
+                <button class="nav-btn" data-tab="agenda">Agenda</button>
+            </nav>
+        </header>
+
+        <!-- 
+            ÁREA DE CONTEÚDO PRINCIPAL
+            Cada section representa uma aba do aplicativo
+        -->
+        <main>
+            
+            <!-- 
+                =================================================================
+                SEÇÃO 1: TAREFAS (TO-DO LIST)
+                =================================================================
+                Funcionalidades:
+                - Listar todas as tarefas
+                - Filtrar por: Todas, Pendentes, Concluídas
+                - Adicionar nova tarefa
+                - Marcar tarefa como concluída
+                - Excluir tarefa
+            -->
+            <section id="tarefas" class="tab-content active">
+                <div class="tab-header">
+                    <h2>Minhas Tarefas</h2>
+                    <!-- Botão para abrir modal de nova tarefa -->
+                    <button class="add-btn" onclick="openModal('tarefa')">+ Nova Tarefa</button>
+                </div>
+                
+                <!-- Botões de filtro -->
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">Todas</button>
+                    <button class="filter-btn" data-filter="pending">Pendentes</button>
+                    <button class="filter-btn" data-filter="completed">Concluídas</button>
+                </div>
+                
+                <!-- Container onde as tarefas serão renderizadas via JavaScript -->
+                <div id="task-list" class="list"></div>
+            </section>
+
+            <!-- 
+                =================================================================
+                SEÇÃO 2: NOTAS
+                =================================================================
+                Funcionalidades:
+                - Criar notas com título e conteúdo
+                - Visualizar notas em formato de grid
+                - Editar notas existentes
+                - Excluir notas
+            -->
+            <section id="notas" class="tab-content">
+                <div class="tab-header">
+                    <h2>Minhas Notas</h2>
+                    <button class="add-btn" onclick="openModal('nota')">+ Nova Nota</button>
+                </div>
+                
+                <!-- Container em formato de grid para as notas -->
+                <div id="notes-grid" class="notes-grid"></div>
+            </section>
+
+            <!-- 
+                =================================================================
+                SEÇÃO 3: AGENDA/CALENDÁRIO
+                =================================================================
+                Funcionalidades:
+                - Visualizar calendário mensal
+                - Navegar entre meses
+                - Selecionar dias para ver eventos
+                - Adicionar eventos em datas específicas
+                - Excluir eventos
+            -->
+            <section id="agenda" class="tab-content">
+                <div class="tab-header">
+                    <h2>Minha Agenda</h2>
+                    <button class="add-btn" onclick="openModal('evento')">+ Novo Evento</button>
+                </div>
+                
+                <!-- Navegação do calendário (mês anterior/próximo) -->
+                <div class="calendar-nav">
+                    <button onclick="changeMonth(-1)">◀</button>
+                    <h3 id="month-year"></h3>
+                    <button onclick="changeMonth(1)">▶</button>
+                </div>
+                
+                <!-- Grade do calendário -->
+                <div class="calendar">
+                    <!-- Cabeçalho com nomes dos dias da semana -->
+                    <div class="calendar-header">
+                        <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                    </div>
+                    <!-- Dias do mês (renderizado via JavaScript) -->
+                    <div id="calendar-days" class="calendar-days"></div>
+                </div>
+                
+                <!-- Lista de eventos do dia selecionado -->
+                <div id="day-events" class="day-events"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 
+        =================================================================
+        MODAL (JANELA POP-UP)
+        =================================================================
+        Esta é uma janela oculta que aparece quando o usuário
+        quer adicionar ou editar algo.
+        
+        O conteúdo é preenchido dinamicamente via JavaScript
+        dependendo do tipo de ação (tarefa, nota ou evento).
+    -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <!-- Botão para fechar o modal -->
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title"></h2>
+            <form id="modal-form"></form>
+        </div>
+    </div>
+
+    <!-- 
+        =================================================================
+        TOAST (MENSAGEM DE FEEDBACK)
+        =================================================================
+        Pequena mensagem que aparece temporariamente
+        para confirmar ações ao usuário (ex: "Tarefa adicionada!")
+    -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 
+        =================================================================
+        SCRIPTS
+        =================================================================
+        app.js contém toda a lógica de funcionamento do aplicativo
+    -->
+    <script src="app.js"></script>
+</body>
+</html>

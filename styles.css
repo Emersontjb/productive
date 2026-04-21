@@ -1,0 +1,1076 @@
+/* 
+    =====================================================================
+    PRODUTIVE - ARQUIVO DE ESTILOS (CSS)
+    =====================================================================
+    
+    Este arquivo define toda a aparência visual do aplicativo.
+    O CSS (Cascading Style Sheets) controla cores, tamanhos,
+    posicionamento e animações.
+    
+    ÍNDICE DE SEÇÕES:
+    1. Variáveis CSS (cores e configurações base)
+    2. Estilos globais (reset e tipografia)
+    3. Estrutura principal (header, navegação)
+    4. Abas e conteúdo
+    5. Componentes de lista (tarefas e eventos)
+    6. Cards de notas
+    7. Calendário
+    8. Modal (janela pop-up)
+    9. Toast (mensagens)
+    10. Design responsivo (mobile)
+    
+    CONCEITOS BÁSICOS USADOS:
+    - CSS Variables: permite mudar cores facilmente
+    - Flexbox: layout flexível e responsivo
+    - Grid: layout em grade para notas
+    - Mobile-first: projetado para celular primeiro
+    
+    =====================================================================
+*/
+
+/* 
+    =====================================================================
+    SEÇÃO 1: VARIÁVEIS CSS
+    =====================================================================
+    Define cores padrão que serão usadas em todo o app.
+    Alterar aqui muda a cor em todos os lugares.
+*/
+:root {
+    /* Cor primária (roxinho/avermelhado) - usa em botões e destaques */
+    --primary: #6366f1;
+    
+    /* Cor primária mais escura - para hover e estados ativos */
+    --primary-dark: #4f46e5;
+    
+    /* Cor secundária (verde) - para status de sucesso */
+    --secondary: #10b981;
+    
+    /* Cor de perigo (vermelho) - para exclusão e alertas */
+    --danger: #ef4444;
+    
+    /* Cor de aviso (amarelo/laranja) */
+    --warning: #f59e0b;
+    
+    /* Cor de fundo principal */
+    --bg: #f8fafc;
+    
+    /* Cor de fundo dos cards */
+    --card: #ffffff;
+    
+    /* Cor do texto principal */
+    --text: #1e293b;
+    
+    /* Cor do texto secundário (mais clara) */
+    --text-light: #64748b;
+    
+    /* Cor das bordas */
+    --border: #e2e8f0;
+    
+    /* Sombra dos cards */
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 2: ESTILOS GLOBAIS
+    =====================================================================
+    Aplica regras a todos os elementos da página.
+*/
+* {
+    /* Remove margens e paddings padrão do navegador */
+    margin: 0;
+    padding: 0;
+    
+    /* Inclui bordas no tamanho total dos elementos */
+    box-sizing: border-box;
+    
+    /* Usa a fonte do sistema (mais rápido que baixar fontes) */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    /* Cor de fundo da página */
+    background: var(--bg);
+    
+    /* Cor do texto */
+    color: var(--text);
+    
+    /* Altura mínima ocupa a tela toda */
+    min-height: 100vh;
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 3: ESTRUTURA PRINCIPAL
+    =====================================================================
+    Container principal que limita a largura máxima
+    e cria o efeito de "app" no centro da tela
+*/
+.app {
+    /* Largura máxima (celular: 100%, tela maior: 600px) */
+    max-width: 600px;
+    
+    /* Centraliza o container */
+    margin: 0 auto;
+    
+    /* Cor de fundo branca */
+    background: var(--card);
+    
+    /* Altura mínima */
+    min-height: 100vh;
+    
+    /* Sombra suave para dar profundidade */
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+}
+
+/* 
+    CABEÇALHO
+    Barra superior com gradiente e navegação
+*/
+header {
+    /* Gradiente de fundo (roxo claro para roxo escuro) */
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    
+    /* Texto branco */
+    color: white;
+    
+    /* Espaçamento interno */
+    padding: 1.5rem;
+    
+    /* Fixa no topo quando scrolla */
+    position: sticky;
+    top: 0;
+    
+    /* Garante que fica acima de outros elementos */
+    z-index: 100;
+}
+
+header h1 {
+    /* Tamanho do título */
+    font-size: 1.5rem;
+    
+    /* Espaço abaixo do título */
+    margin-bottom: 1rem;
+}
+
+/* 
+    NAVEGAÇÃO
+    Botões para trocar entre abas
+*/
+nav {
+    /* Layout em linha */
+    display: flex;
+    
+    /* Espaço entre os botões */
+    gap: 0.5rem;
+}
+
+/* Botões de navegação */
+.nav-btn {
+    /* Ocupa espaço igual */
+    flex: 1;
+    
+    /* Espaçamento interno */
+    padding: 0.75rem;
+    
+    /* Remove borda padrão */
+    border: none;
+    
+    /* Fundo translúcido */
+    background: rgba(255, 255, 255, 0.15);
+    
+    /* Texto branco */
+    color: white;
+    
+    /* Bordas arredondadas */
+    border-radius: 8px;
+    
+    /* Cursor de clique */
+    cursor: pointer;
+    
+    /* Texto em negrito */
+    font-weight: 500;
+    
+    /* Transição suave de cores */
+    transition: all 0.2s;
+}
+
+/* Estado ativo do botão de navegação */
+.nav-btn.active {
+    /* Fundo branco */
+    background: white;
+    
+    /* Texto roxo */
+    color: var(--primary);
+}
+
+/* Área de conteúdo principal */
+main {
+    /* Espaçamento interno */
+    padding: 1rem;
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 4: ABAS E CONTEÚDO
+    =====================================================================
+*/
+
+/* Oculta todas as abas por padrão */
+.tab-content {
+    display: none;
+}
+
+/* Mostra apenas a aba ativa */
+.tab-content.active {
+    display: block;
+}
+
+/* Cabeçalho de cada aba (título + botão adicionar) */
+.tab-header {
+    /* Layout em linha */
+    display: flex;
+    
+    /* Espaço entre título e botão */
+    justify-content: space-between;
+    
+    /* Alinha verticalmente */
+    align-items: center;
+    
+    /* Espaço abaixo */
+    margin-bottom: 1rem;
+}
+
+.tab-header h2 {
+    font-size: 1.25rem;
+}
+
+/* 
+    =====================================================================
+    BOTÕES
+    =====================================================================
+*/
+
+/* Botão principal de adicionar */
+.add-btn {
+    /* Cor de fundo roxa */
+    background: var(--primary);
+    
+    /* Texto branco */
+    color: white;
+    
+    /* Remove borda */
+    border: none;
+    
+    /* Espaçamento */
+    padding: 0.5rem 1rem;
+    
+    /* Bordas arredondadas */
+    border-radius: 8px;
+    
+    /* Cursor de clique */
+    cursor: pointer;
+    
+    /* Texto em negrito */
+    font-weight: 500;
+    
+    /* Transição suave */
+    transition: background 0.2s;
+}
+
+.add-btn:hover {
+    /* Escurece ao passar o mouse */
+    background: var(--primary-dark);
+}
+
+/* 
+    =====================================================================
+    FILTROS DE TAREFAS
+    =====================================================================
+*/
+.filters {
+    /* Layout em linha */
+    display: flex;
+    
+    /* Espaço entre botões */
+    gap: 0.5rem;
+    
+    /* Espaço abaixo */
+    margin-bottom: 1rem;
+}
+
+/* Botões de filtro */
+.filter-btn {
+    /* Espaçamento interno */
+    padding: 0.4rem 0.8rem;
+    
+    /* Borda clara */
+    border: 1px solid var(--border);
+    
+    /* Fundo branco */
+    background: white;
+    
+    /* Bordas bem arredondadas (forma de pílula) */
+    border-radius: 20px;
+    
+    /* Cursor de clique */
+    cursor: pointer;
+    
+    /* Tamanho menor de fonte */
+    font-size: 0.85rem;
+    
+    /* Transição suave */
+    transition: all 0.2s;
+}
+
+/* Filtro ativo */
+.filter-btn.active {
+    /* Fundo roxo */
+    background: var(--primary);
+    
+    /* Texto branco */
+    color: white;
+    
+    /* Borda roxa */
+    border-color: var(--primary);
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 5: LISTAS DE TAREFAS E EVENTOS
+    =====================================================================
+*/
+.list {
+    /* Layout em coluna */
+    display: flex;
+    flex-direction: column;
+    
+    /* Espaço entre itens */
+    gap: 0.75rem;
+}
+
+/* Item de tarefa */
+.task-item, .event-item {
+    /* Fundo cinza claro */
+    background: var(--bg);
+    
+    /* Espaçamento interno */
+    padding: 1rem;
+    
+    /* Bordas arredondadas */
+    border-radius: 12px;
+    
+    /* Layout em linha */
+    display: flex;
+    
+    /* Alinha itens verticalmente */
+    align-items: center;
+    
+    /* Espaço entre elementos */
+    gap: 0.75rem;
+    
+    /* Transições suaves */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Efeito hover nos itens */
+.task-item:hover, .event-item:hover {
+    /* Levanta ligeramente */
+    transform: translateY(-2px);
+    
+    /* Sombra mais forte */
+    box-shadow: var(--shadow);
+}
+
+/* Estado de tarefa concluída */
+.task-item.completed {
+    /* Opacidade reduzida */
+    opacity: 0.6;
+}
+
+/* Título tachado quando concluído */
+.task-item.completed .task-title {
+    /* Linha no meio do texto */
+    text-decoration: line-through;
+}
+
+/* 
+    CHECKBOX (CÍRCULO DE SELEÇÃO)
+    Representa o estado de conclusão da tarefa
+*/
+.checkbox {
+    /* Tamanho fixo */
+    width: 24px;
+    height: 24px;
+    
+    /* Borda roxa */
+    border: 2px solid var(--primary);
+    
+    /* Forma circular */
+    border-radius: 50%;
+    
+    /* Cursor de clique */
+    cursor: pointer;
+    
+    /* Alinha conteúdo interno */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Transição suave */
+    transition: all 0.2s;
+    
+    /* Não encolhe quando há pouco espaço */
+    flex-shrink: 0;
+}
+
+/* Estado marcado */
+.checkbox.checked {
+    /* Fundo roxo */
+    background: var(--primary);
+}
+
+/* Símbolo de check (✓) quando marcado */
+.checkbox.checked::after {
+    content: '✓';
+    color: white;
+    font-size: 14px;
+}
+
+/* Área de conteúdo do item */
+.task-content, .event-content {
+    /* Ocupa o espaço disponível */
+    flex: 1;
+}
+
+/* Título da tarefa */
+.task-title, .event-title {
+    /* Texto em negrito */
+    font-weight: 500;
+    
+    /* Espaço abaixo */
+    margin-bottom: 0.25rem;
+}
+
+/* Data da tarefa/evento */
+.task-date, .event-date {
+    /* Fonte menor */
+    font-size: 0.8rem;
+    
+    /* Cor mais clara */
+    color: var(--text-light);
+}
+
+/* 
+    INDICADOR DE PRIORIDADE
+    Diferentes cores para diferentes níveis
+*/
+.task-priority {
+    /* Espaçamento interno pequeno */
+    padding: 0.2rem 0.5rem;
+    
+    /* Bordas arredondadas */
+    border-radius: 4px;
+    
+    /* Fonte bem pequena */
+    font-size: 0.7rem;
+    
+    /* Texto em negrito */
+    font-weight: 600;
+    
+    /* Texto em maiúsculas */
+    text-transform: uppercase;
+}
+
+/* Prioridade alta */
+.priority-high { background: #fecaca; color: var(--danger); }
+
+/* Prioridade média */
+.priority-medium { background: #fef3c7; color: var(--warning); }
+
+/* Prioridade baixa */
+.priority-low { background: #d1fae5; color: var(--secondary); }
+
+/* 
+    BOTÃO DE EXCLUIR
+    Pequeno botão de lixeira
+*/
+.delete-btn {
+    /* Sem fundo */
+    background: none;
+    
+    /* Sem borda */
+    border: none;
+    
+    /* Cor cinza */
+    color: var(--text-light);
+    
+    /* Cursor de clique */
+    cursor: pointer;
+    
+    /* Espaçamento */
+    padding: 0.5rem;
+    
+    /* Bordas arredondadas */
+    border-radius: 8px;
+    
+    /* Transição suave */
+    transition: all 0.2s;
+}
+
+.delete-btn:hover {
+    /* Fundo vermelho claro */
+    background: #fee2e2;
+    
+    /* Ícone vermelho */
+    color: var(--danger);
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 6: CARDS DE NOTAS
+    =====================================================================
+    Grade de notas no formato de cards
+*/
+.notes-grid {
+    /* Layout em grade */
+    display: grid;
+    
+    /* Colunas automáticas (mínimo 150px cada) */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    
+    /* Espaço entre cards */
+    gap: 1rem;
+}
+
+/* Card individual de nota */
+.note-card {
+    /* Fundo cinza */
+    background: var(--bg);
+    
+    /* Espaçamento */
+    padding: 1rem;
+    
+    /* Bordas arredondadas */
+    border-radius: 12px;
+    
+    /* Cursor de clique (indica clicável) */
+    cursor: pointer;
+    
+    /* Transição suave */
+    transition: all 0.2s;
+    
+    /* Altura mínima */
+    min-height: 120px;
+}
+
+.note-card:hover {
+    /* Levanta ao passar mouse */
+    transform: translateY(-2px);
+    
+    /* Sombra */
+    box-shadow: var(--shadow);
+}
+
+/* Título da nota no card */
+.note-card h3 {
+    /* Tamanho */
+    font-size: 1rem;
+    
+    /* Espaço abaixo */
+    margin-bottom: 0.5rem;
+    
+    /* Cor roxa */
+    color: var(--primary);
+}
+
+/* Conteúdo da nota no card */
+.note-card p {
+    /* Fonte menor */
+    font-size: 0.85rem;
+    
+    /* Cor mais clara */
+    color: var(--text-light);
+    
+    /* Limita texto longo */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    /* Limita a 3 linhas */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* Data da nota */
+.note-date {
+    /* Fonte muito pequena */
+    font-size: 0.7rem;
+    
+    /* Cor clara */
+    color: var(--text-light);
+    
+    /* Espaço acima */
+    margin-top: 0.5rem;
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 7: CALENDÁRIO
+    =====================================================================
+*/
+.calendar {
+    /* Fundo cinza */
+    background: var(--bg);
+    
+    /* Bordas arredondadas */
+    border-radius: 12px;
+    
+    /* Espaçamento interno */
+    padding: 1rem;
+    
+    /* Espaço abaixo */
+    margin-bottom: 1rem;
+}
+
+/* Navegação do calendário */
+.calendar-nav {
+    /* Layout em linha */
+    display: flex;
+    
+    /* Espaço entre elementos */
+    justify-content: space-between;
+    
+    /* Alinha verticalmente */
+    align-items: center;
+    
+    /* Espaço abaixo */
+    margin-bottom: 1rem;
+}
+
+.calendar-nav button {
+    /* Cor roxa */
+    background: var(--primary);
+    
+    /* Texto branco */
+    color: white;
+    
+    /* Sem borda */
+    border: none;
+    
+    /* Espaçamento */
+    padding: 0.5rem 1rem;
+    
+    /* Bordas arredondadas */
+    border-radius: 8px;
+    
+    /* Cursor de clique */
+    cursor: pointer;
+}
+
+/* Cabeçalho do calendário (dias da semana) */
+.calendar-header {
+    /* Layout em grade com 7 colunas */
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    
+    /* Centraliza texto */
+    text-align: center;
+    
+    /* Texto em negrito */
+    font-weight: 600;
+    
+    /* Fonte pequena */
+    font-size: 0.8rem;
+    
+    /* Cor clara */
+    color: var(--text-light);
+    
+    /* Espaço abaixo */
+    margin-bottom: 0.5rem;
+}
+
+/* Grade de dias do calendário */
+.calendar-days {
+    /* Layout em grade */
+    display: grid;
+    
+    /* 7 colunas */
+    grid-template-columns: repeat(7, 1fr);
+    
+    /* Espaço pequeno entre dias */
+    gap: 0.25rem;
+}
+
+/* Dia individual do calendário */
+.calendar-day {
+    /* Proporção quadrada (largura = altura) */
+    aspect-ratio: 1;
+    
+    /* Centraliza conteúdo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Forma circular */
+    border-radius: 50%;
+    
+    /* Cursor de clique */
+    cursor: pointer;
+    
+    /* Tamanho da fonte */
+    font-size: 0.9rem;
+    
+    /* Transição suave */
+    transition: all 0.2s;
+}
+
+.calendar-day:hover {
+    /* Fundo ao passar mouse */
+    background: var(--border);
+}
+
+/* Dia de hoje */
+.calendar-day.today {
+    /* Fundo roxo */
+    background: var(--primary);
+    
+    /* Texto branco */
+    color: white;
+}
+
+/* Dia selecionado */
+.calendar-day.selected {
+    /* Fundo roxo escuro */
+    background: var(--primary-dark);
+    
+    /* Texto branco */
+    color: white;
+}
+
+/* Dia que tem evento (mostra pontinho) */
+.calendar-day.has-event {
+    /* Posição relativa para posicionamento do pontinho */
+    position: relative;
+}
+
+/* Pontinho verde que indica evento */
+.calendar-day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    width: 6px;
+    height: 6px;
+    background: var(--secondary);
+    border-radius: 50%;
+}
+
+/* Dias de outros meses (mais claros) */
+.calendar-day.other-month {
+    color: var(--border);
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 8: MODAL (JANELA POP-UP)
+    =====================================================================
+*/
+.modal {
+    /* Oculto por padrão */
+    display: none;
+    
+    /* Posição fixa na tela */
+    position: fixed;
+    top: 0;
+    left: 0;
+    
+    /* Ocupa a tela toda */
+    width: 100%;
+    height: 100%;
+    
+    /* Fundo semi-transparente */
+    background: rgba(0, 0, 0, 0.5);
+    
+    /* Acima de tudo */
+    z-index: 1000;
+    
+    /* Centraliza conteúdo */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Classe para mostrar o modal */
+.modal.show {
+    display: flex;
+}
+
+/* Conteúdo do modal */
+.modal-content {
+    /* Fundo branco */
+    background: white;
+    
+    /* Espaçamento interno */
+    padding: 2rem;
+    
+    /* Bordas arredondadas */
+    border-radius: 16px;
+    
+    /* Largura */
+    width: 90%;
+    max-width: 400px;
+    
+    /* Posição relativa */
+    position: relative;
+}
+
+/* Botão de fechar (X) */
+.close {
+    /* Posição absoluta no canto */
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    
+    /* Tamanho grande */
+    font-size: 1.5rem;
+    
+    /* Cursor de clique */
+    cursor: pointer;
+    
+    /* Cor cinza */
+    color: var(--text-light);
+}
+
+.modal-content h2 {
+    /* Espaço abaixo */
+    margin-bottom: 1.5rem;
+    
+    /* Cor roxa */
+    color: var(--primary);
+}
+
+/* 
+    FORMULÁRIOS
+    Campos de entrada de dados
+*/
+.form-group {
+    /* Espaço entre campos */
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    /* Display block para ocupar linha própria */
+    display: block;
+    
+    /* Espaço abaixo */
+    margin-bottom: 0.5rem;
+    
+    /* Texto em negrito */
+    font-weight: 500;
+    
+    /* Fonte um pouco menor */
+    font-size: 0.9rem;
+}
+
+/* Inputs, textareas e selects */
+.form-group input,
+.form-group textarea,
+.form-group select {
+    /* Ocupa toda a largura disponível */
+    width: 100%;
+    
+    /* Espaçamento interno */
+    padding: 0.75rem;
+    
+    /* Borda padrão */
+    border: 1px solid var(--border);
+    
+    /* Bordas arredondadas */
+    border-radius: 8px;
+    
+    /* Tamanho da fonte */
+    font-size: 1rem;
+    
+    /* Transição na cor da borda */
+    transition: border-color 0.2s;
+}
+
+/* Estado de foco dos campos */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    /* Remove contorno padrão */
+    outline: none;
+    
+    /* Borda roxa quando em foco */
+    border-color: var(--primary);
+}
+
+/* Textarea (campo de texto grande) */
+.form-group textarea {
+    /* Altura mínima */
+    min-height: 100px;
+    
+    /* Permite redimensionar apenas verticalmente */
+    resize: vertical;
+}
+
+/* Container dos botões do formulário */
+.form-actions {
+    /* Layout em linha */
+    display: flex;
+    
+    /* Espaço entre botões */
+    gap: 0.5rem;
+    
+    /* Espaço acima */
+    margin-top: 1.5rem;
+}
+
+.form-actions button {
+    /* Ocupa espaço igual */
+    flex: 1;
+    
+    /* Espaçamento interno */
+    padding: 0.75rem;
+    
+    /* Sem borda */
+    border: none;
+    
+    /* Bordas arredondadas */
+    border-radius: 8px;
+    
+    /* Cursor de clique */
+    cursor: pointer;
+    
+    /* Texto em negrito */
+    font-weight: 500;
+    
+    /* Transição suave */
+    transition: background 0.2s;
+}
+
+/* Botão primário (roxo) */
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+/* Botão secundário (cinza) */
+.btn-secondary {
+    background: var(--border);
+    color: var(--text);
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 9: TOAST (MENSAGENS)
+    =====================================================================
+    Mensagem temporária que aparece na parte inferior
+*/
+.toast {
+    /* Posição fixa */
+    position: fixed;
+    
+    /* Parte inferior */
+    bottom: 2rem;
+    
+    /* Centraliza horizontalmente */
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    
+    /* Fundo escuro */
+    background: var(--text);
+    
+    /* Texto branco */
+    color: white;
+    
+    /* Espaçamento */
+    padding: 1rem 2rem;
+    
+    /* Bordas arredondadas */
+    border-radius: 8px;
+    
+    /* Inicialmente invisível e deslocado */
+    opacity: 0;
+    
+    /* Transição suave */
+    transition: all 0.3s;
+    
+    /* Acima de tudo */
+    z-index: 2000;
+}
+
+/* Estado visível do toast */
+.toast.show {
+    /* Move para posição visível */
+    transform: translateX(-50%) translateY(0);
+    
+    /* Totalmente visível */
+    opacity: 1;
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 10: ESTADO VAZIO
+    =====================================================================
+    Mensagem mostrada quando não há itens
+*/
+.empty-state {
+    /* Centraliza texto */
+    text-align: center;
+    
+    /* Espaçamento */
+    padding: 3rem 1rem;
+    
+    /* Cor cinza */
+    color: var(--text-light);
+}
+
+/* Emoji grande no estado vazio */
+.empty-state span {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+/* 
+    =====================================================================
+    SEÇÃO 11: DESIGN RESPONSIVO
+    =====================================================================
+    Ajustes para telas menores (celular)
+*/
+@media (max-width: 480px) {
+    /* Reduz padding do header */
+    header {
+        padding: 1rem;
+    }
+
+    /* Reduz tamanho do título */
+    header h1 {
+        font-size: 1.25rem;
+    }
+
+    /* Reduz padding dos botões de navegação */
+    .nav-btn {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    /* Reduz padding do conteúdo */
+    main {
+        padding: 0.75rem;
+    }
+
+    /* Grid de notas com 2 colunas */
+    .notes-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
