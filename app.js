@@ -780,11 +780,10 @@ document.getElementById('modal').addEventListener('click', (e) => {
 */
 
 /**
- * Registra o Service Worker para funcionar offline
- * Esta linha faz o navegador baixar e ativar o sw.js
+ * Service Worker desativado temporariamente para debug
  */
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
+    navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
 
