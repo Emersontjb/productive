@@ -450,6 +450,18 @@ main {
     
     /* Espaço abaixo */
     margin-bottom: 0.25rem;
+    
+    /* Cursor de clique (indica que é editável) */
+    cursor: pointer;
+    
+    /* Transição suave */
+    transition: color 0.2s;
+}
+
+/* Efeito hover no título */
+.task-title:hover, .event-title:hover {
+    /* Cor roxa ao passar mouse */
+    color: var(--primary);
 }
 
 /* Data da tarefa/evento */

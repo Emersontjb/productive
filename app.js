@@ -191,16 +191,18 @@ function renderTarefas() {
     });
 
     // Gera HTML para cada tarefa
-    list.innerHTML = filtered.map((t, i) => `
+    list.innerHTML = filtered.map((t, i) => {
+        const taskIndex = tarefas.indexOf(t);
+        return `
         <div class="task-item ${t.completed ? 'completed' : ''}">
-            <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTarefa(${i})"></div>
+            <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTarefa(${taskIndex})"></div>
             <div class="task-content">
-                <div class="task-title">${t.titulo}</div>
+                <div class="task-title" onclick="editTarefa(${taskIndex})">${t.titulo}</div>
                 <div class="task-date">${formatDate(t.data)}${t.prioridade ? ' • ' + t.prioridade : ''}</div>
             </div>
-            <button class="delete-btn" onclick="deleteTarefa(${i})">🗑</button>
+            <button class="delete-btn" onclick="deleteTarefa(${taskIndex})">🗑</button>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 /**
@@ -208,14 +210,7 @@ function renderTarefas() {
  * @param {number} index - Índice da tarefa no array filtrado
  */
 function toggleTarefa(index) {
-    // Recupera a tarefa filtrada
-    const filtered = currentFilter === 'pending' ? tarefas.filter(t => !t.completed) :
-                  currentFilter === 'completed' ? tarefas.filter(t => t.completed) : [...tarefas].sort((a, b) => {
-        if (a.completed !== b.completed) return a.completed ? 1 : -1;
-        return new Date(a.data) - new Date(b.data);
-    });
-    const task = filtered[index];
-    
+    const task = tarefas[index];
     if (task) {
         // Alterna o estado
         task.completed = !task.completed;
@@ -234,12 +229,8 @@ function toggleTarefa(index) {
  * @param {number} index - Índice da tarefa no array filtrado
  */
 function deleteTarefa(index) {
-    // Recupera as tarefas filtradas
-    const filtered = currentFilter === 'pending' ? tarefas.filter(t => !t.completed) :
-                  currentFilter === 'completed' ? tarefas.filter(t => t.completed) : tarefas;
-    
-    // Remove a tarefa
-    tarefas = tarefas.filter((t, i) => filtered[i] !== t);
+    // Remove a tarefa pelo índice
+    tarefas.splice(index, 1);
     
     // Salva e atualiza
     saveData();
@@ -261,6 +252,62 @@ function addTarefa(titulo, data, prioridade) {
     saveData();
     renderTarefas();
     showToast('Tarefa adicionada!');
+}
+
+/**
+ * Abre o modal para editar uma tarefa existente
+ * @param {number} index - Índice da tarefa no array principal
+ */
+function editTarefa(index) {
+    const task = tarefas[index];
+    if (!task) return;
+    
+    // Define o título do modal
+    document.getElementById('modal-title').textContent = 'Editar Tarefa';
+    
+    // Gera o formulário com os dados atuais
+    document.getElementById('modal-form').innerHTML = `
+        <div class="form-group">
+            <label>Tarefa</label>
+            <input type="text" name="titulo" value="${task.titulo}" required>
+        </div>
+        <div class="form-group">
+            <label>Data</label>
+            <input type="date" name="data" value="${task.data}" required>
+        </div>
+        <div class="form-group">
+            <label>Prioridade</label>
+            <select name="prioridade">
+                <option value="">Nenhuma</option>
+                <option value="baixa" ${task.prioridade === 'baixa' ? 'selected' : ''}>Baixa</option>
+                <option value="média" ${task.prioridade === 'média' ? 'selected' : ''}>Média</option>
+                <option value="alta" ${task.prioridade === 'alta' ? 'selected' : ''}>Alta</option>
+            </select>
+        </div>
+        <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="deleteTarefa(${index})">Excluir</button>
+            <button type="submit" class="btn-primary">Salvar</button>
+        </div>
+    `;
+    
+    // Configura o submit do formulário
+    document.getElementById('modal-form').onsubmit = (e) => {
+        e.preventDefault();
+        const form = e.target;
+        tarefas[index] = {
+            titulo: form.titulo.value,
+            data: form.data.value,
+            prioridade: form.prioridade.value,
+            completed: task.completed
+        };
+        saveData();
+        renderTarefas();
+        closeModal();
+        showToast('Tarefa atualizada!');
+    };
+    
+    // Abre o modal
+    document.getElementById('modal').classList.add('show');
 }
 
 
@@ -474,15 +521,18 @@ function renderDayEvents() {
     }
 
     // Gera HTML para cada evento
-    container.innerHTML = `<h3>${dateBr}</h3>` + dayEvents.map((e, i) => `
+    const eventosDoDia = eventos.filter(e => e.data === dateStr);
+    container.innerHTML = `<h3>${dateBr}</h3>` + eventosDoDia.map((e, i) => {
+        const eventIndex = eventos.indexOf(e);
+        return `
         <div class="event-item">
             <div class="event-content">
-                <div class="event-title">${e.titulo}</div>
+                <div class="event-title" onclick="editEvento(${eventIndex})">${e.titulo}</div>
                 <div class="event-date">${e.hora}</div>
             </div>
-            <button class="delete-btn" onclick="deleteEvento(${i})">🗑</button>
+            <button class="delete-btn" onclick="deleteEvento(${eventIndex})">🗑</button>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 /**
@@ -500,16 +550,68 @@ function addEvento(titulo, data, hora) {
 
 /**
  * Exclui um evento
- * @param {number} index - Índice do evento no array do dia
+ * @param {number} index - Índice do evento no array
  */
 function deleteEvento(index) {
-    const dateStr = selectedDate.toISOString().split('T')[0];
-    const dayEvents = eventos.filter(e => e.data === dateStr);
-    const eventToDelete = dayEvents[index];
-    eventos = eventos.filter(e => e !== eventToDelete);
+    // Remove o evento pelo índice
+    eventos.splice(index, 1);
+    
+    // Salva e atualiza
     saveData();
     renderCalendar();
     showToast('Evento excluído');
+}
+
+/**
+ * Abre o modal para editar um evento existente
+ * @param {number} index - Índice do evento no array
+ */
+function editEvento(index) {
+    const event = eventos[index];
+    if (!event) return;
+    
+    // Define o título do modal
+    document.getElementById('modal-title').textContent = 'Editar Evento';
+    
+    // Gera o formulário com os dados atuais
+    const form = document.getElementById('modal-form');
+    form.innerHTML = `
+        <div class="form-group">
+            <label>Evento</label>
+            <input type="text" name="titulo" value="${event.titulo}" required>
+        </div>
+        <div class="form-group">
+            <label>Data</label>
+            <input type="date" name="data" value="${event.data}" required>
+        </div>
+        <div class="form-group">
+            <label>Horário</label>
+            <input type="time" name="hora" value="${event.hora}" required>
+        </div>
+        <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="deleteEvento(${index})">Excluir</button>
+            <button type="submit" class="btn-primary">Salvar</button>
+        </div>
+    `;
+    
+    // Configura o submit do formulário
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        eventos[index] = {
+            titulo: formData.get('titulo'),
+            data: formData.get('data'),
+            hora: formData.get('hora')
+        };
+        saveData();
+        renderCalendar();
+        closeModal();
+        showToast('Evento atualizado!');
+    };
+    
+    // Abre o modal
+    document.getElementById('modal').classList.add('show');
+}
 }
 
 
