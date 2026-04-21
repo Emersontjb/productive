@@ -612,7 +612,6 @@ function editEvento(index) {
     // Abre o modal
     document.getElementById('modal').classList.add('show');
 }
-}
 
 
 /* 
